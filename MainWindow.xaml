@@ -1,0 +1,36 @@
+﻿<Window x:Class="GeneratorWykresow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeneratorWykresow"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid x:Name="bcs">
+        <Button x:Name="generateButton" Content="Generate" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
+        <Canvas Name="poleWykresu" Background="Yellow" Margin="400,10,10,10">
+
+
+        </Canvas>
+        <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="OnSelectFunction">
+            <ComboBoxItem Content="Funkcja Liniowa"/>
+            <ComboBoxItem Content="Funkcja Kwadratowa"/>
+            <ComboBoxItem Content="Funkcja Homograficzna"/>
+            <ComboBoxItem Content="Funkcja Wykładnicza"/>
+            <ComboBoxItem Content="Funkcja Logarytmiczna"/>
+        </ComboBox>
+        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="245,39,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <StackPanel x:Name="lineFunctioneEquation" Margin="10,37,0,0" Visibility="Hidden" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Label Content="f(x) =" Width="39" Height="29"/>
+            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
+                <TextBox x:Name="linearFunctionA" TextWrapping="Wrap" Text="a" TextAlignment="Center"/>
+            </Viewbox>
+            <Label Content="x +" Height="29"/>
+            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
+                <TextBox x:Name="linearFunctionB" TextWrapping="Wrap" Text="b" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </Viewbox>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
