@@ -19,24 +19,18 @@ namespace GeneratorWykresow
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
+        private int scale = 1;
+        private int zoom = 4;
         public MainWindow()
         {
             InitializeComponent();
 
-            LineGeometry myLineGeometry = new LineGeometry();
-            myLineGeometry.StartPoint = new Point(0, 0);
-            myLineGeometry.EndPoint = new Point(100, 130);
+            DrawGrid();
 
-            Path myPath = new Path();
-            myPath.Stroke = Brushes.Black;
-            myPath.StrokeThickness = 1;
-            myPath.Data = myLineGeometry;
-
-            poleWykresu.Children.Add(myPath);
-
-            LineGeometry myLineGeometry2 = new LineGeometry();
+/*            LineGeometry myLineGeometry2 = new LineGeometry();
             myLineGeometry2.EndPoint = new Point(600, 300);
             myLineGeometry2.StartPoint = new Point(100, 130);
 
@@ -45,8 +39,71 @@ namespace GeneratorWykresow
             myPath2.StrokeThickness = 1;
             myPath2.Data = myLineGeometry2;
 
-            poleWykresu.Children.Add(myPath2);
+            poleWykresu.Children.Add(myPath2);*/
 
+        }
+
+        private void DrawGrid()
+        {
+            poleWykresu.Children.Clear();
+
+            double functionScaleHeight = poleWykresu.Height;
+            double functionScaleWidth = poleWykresu.Width;
+
+            List<LineGeometry> lines = new List<LineGeometry>();
+            List<Path> paths = new List<Path>();
+
+            for (int ifPlus = 1; ifPlus > -2; ifPlus -= 2)
+            {
+                for (int i = (int)(functionScaleHeight / 2); i < functionScaleHeight && i > 0; i += 10 * zoom * ifPlus)
+                {
+                    lines.Add(new LineGeometry());
+                    lines.Last().StartPoint = new Point(i, 0);
+                    lines.Last().EndPoint = new Point(i, functionScaleHeight);
+
+                    paths.Add(new Path());
+                    paths.Last().Stroke = Brushes.Black;
+                    paths.Last().StrokeThickness = 0.5;
+                    paths.Last().Data = lines.Last();
+
+                    poleWykresu.Children.Add(paths.Last());
+                }
+
+                for (int i = (int)(functionScaleWidth / 2); i < functionScaleWidth && i > 0; i += 10 * zoom * ifPlus)
+                {
+                    lines.Add(new LineGeometry());
+                    lines.Last().StartPoint = new Point(0, i);
+                    lines.Last().EndPoint = new Point(functionScaleWidth, i);
+
+                    paths.Add(new Path());
+                    paths.Last().Stroke = Brushes.Black;
+                    paths.Last().StrokeThickness = 0.5;
+                    paths.Last().Data = lines.Last();
+
+                    poleWykresu.Children.Add(paths.Last());
+                }
+            }
+            LineGeometry midleX = new LineGeometry();
+            LineGeometry midleY = new LineGeometry();
+
+            midleX.StartPoint = new Point(functionScaleHeight / 2, 0);
+            midleY.StartPoint = new Point(0, functionScaleWidth / 2);
+            midleX.EndPoint = new Point(functionScaleHeight / 2, functionScaleWidth);
+            midleY.EndPoint = new Point(functionScaleHeight, functionScaleWidth /2);
+
+            Path midleXPath = new Path();  
+            Path midleYPath = new Path();
+
+            midleXPath.Stroke = Brushes.Red;
+            midleXPath.StrokeThickness = 0.5;
+            midleXPath.Data = midleX;
+
+            midleYPath.Stroke = Brushes.Red;
+            midleYPath.StrokeThickness = 0.5;
+            midleYPath.Data = midleY;
+
+            poleWykresu.Children.Add(midleYPath);
+            poleWykresu.Children.Add(midleXPath);
         }
 
         public void OnGenerateClick()
@@ -65,8 +122,8 @@ namespace GeneratorWykresow
 
         private void DrawLineFunction(object sender, EventArgs e)
         {
-            Regex reg = new Regex("[^0-9]+");
-            if (reg.IsMatch(linearFunctionA.Text) && reg.IsMatch(linearFunctionB.Text))
+            Regex reg = new Regex("^[0-9]+");
+            if (!reg.IsMatch(linearFunctionA.Text) && !reg.IsMatch(linearFunctionB.Text))
             {
                 abc.Text = "Muszą być lidzby dzbanie";
                 return;
@@ -91,5 +148,15 @@ namespace GeneratorWykresow
             }
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            String a = scaleTextBox.Text;
+            Regex reg = new Regex("^[0-9]+");
+            if(reg.IsMatch(a))
+            {
+                zoom = int.Parse(a);
+                DrawGrid();
+            }
+        }
     }
 }

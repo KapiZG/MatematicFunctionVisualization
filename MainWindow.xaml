@@ -8,10 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid x:Name="bcs">
         <Button x:Name="generateButton" Content="Generate" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
-        <Canvas Name="poleWykresu" Background="Yellow" Margin="400,10,10,10">
-
-
-        </Canvas>
+        <Canvas Name="poleWykresu" Background="Yellow" Margin="370,7,10,7" Height="420" Width="420"/>
         <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="OnSelectFunction">
             <ComboBoxItem Content="Funkcja Liniowa"/>
             <ComboBoxItem Content="Funkcja Kwadratowa"/>
@@ -31,6 +28,8 @@
             </Viewbox>
 
         </StackPanel>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="101,282,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="141,263,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>
