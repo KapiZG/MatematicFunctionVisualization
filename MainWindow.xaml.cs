@@ -23,10 +23,15 @@ namespace GeneratorWykresow
     public partial class MainWindow : Window
     {
         private int scale = 1;
-        private int zoom = 4;
+        private int zoom = 1;
+        private double functionScaleHeight;
+        private double functionScaleWidth;
         public MainWindow()
         {
             InitializeComponent();
+
+            functionScaleHeight = poleWykresu.Height;
+            functionScaleWidth = poleWykresu.Width;
 
             DrawGrid();
 
@@ -46,9 +51,6 @@ namespace GeneratorWykresow
         private void DrawGrid()
         {
             poleWykresu.Children.Clear();
-
-            double functionScaleHeight = poleWykresu.Height;
-            double functionScaleWidth = poleWykresu.Width;
 
             List<LineGeometry> lines = new List<LineGeometry>();
             List<Path> paths = new List<Path>();
@@ -104,6 +106,9 @@ namespace GeneratorWykresow
 
             poleWykresu.Children.Add(midleYPath);
             poleWykresu.Children.Add(midleXPath);
+
+            lines.Clear();
+            paths.Clear();
         }
 
         public void OnGenerateClick()
@@ -120,17 +125,70 @@ namespace GeneratorWykresow
 
         }
 
+        private void DrawQuadraticFunction(object sender, EventArgs e)
+        {
+
+        }
+
         private void DrawLineFunction(object sender, EventArgs e)
         {
             Regex reg = new Regex("^[0-9]+");
-            if (!reg.IsMatch(linearFunctionA.Text) && !reg.IsMatch(linearFunctionB.Text))
+            String aString = linearFunctionA.Text;
+            String bString = linearFunctionB.Text;
+            int a = 1;
+            int b = 0;
+            double y, i;
+           
+            if (!reg.IsMatch(aString) || !reg.IsMatch(bString))
             {
                 abc.Text = "Muszą być lidzby dzbanie";
                 return;
             }
-            int a = int.Parse(linearFunctionA.Text);
-            int b = int.Parse(linearFunctionB.Text);
-            abc.Text =  (a + b).ToString();
+
+            if(!String.IsNullOrEmpty(aString))
+            {
+                a = int.Parse(aString);             
+            }
+
+            if(!String.IsNullOrEmpty(bString))
+            {
+                b = int.Parse(bString);
+            }
+
+
+            i = 0;
+            List<LineGeometry> lines = new List<LineGeometry>();
+            List<Path> paths = new List<Path>();
+
+            for (double x = functionScaleWidth / 2 / (10 * zoom) * -1; x <= functionScaleWidth / 2 / (10 * zoom);)
+            {
+                lines.Add(new LineGeometry());
+
+                y = a * x + b;
+                y = y * (10 * zoom);
+                if(y > functionScaleHeight || y < -functionScaleHeight) { i += 10 * zoom; x++; continue; }
+                if(y < 0) { y *= -1; y += 210; }
+                else if(y > 0) { y = 210 - y; }
+                else { y = 210; }
+                lines.Last().StartPoint = new Point(i, y);
+
+                i += 10 * zoom;
+                x++;
+                y = a * x + b;
+                y = y * (10 * zoom);
+                if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
+                if (y < 0) { y *= -1; y += 210; }
+                else if (y > 0) { y = 210 - y; }
+                else { y = 210; }
+                lines.Last().EndPoint = new Point(i, y);
+
+                paths.Add(new Path());
+                paths.Last().Stroke = Brushes.Blue;
+                paths.Last().StrokeThickness = 0.5;
+                paths.Last().Data = lines.Last();
+
+                poleWykresu.Children.Add(paths.Last());
+            }
         }
 
         private void OnSelectFunction(object sender, EventArgs e)
