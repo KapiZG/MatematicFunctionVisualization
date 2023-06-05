@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:GeneratorWykresow"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
     <Grid x:Name="bcs">
-        <Button x:Name="generateButton" Content="Generate" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
-        <Canvas Name="poleWykresu" Background="Yellow" Margin="370,7,10,7" Height="420" Width="420"/>
+        <Button x:Name="generateButton" Content="Generuj" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" Width="54"/>
+        <Canvas Name="poleWykresu" Background="Yellow" Margin="310,4,10,10" Height="420" Width="480"/>
         <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="OnSelectFunction">
             <ComboBoxItem Content="Funkcja Liniowa"/>
             <ComboBoxItem Content="Funkcja Kwadratowa"/>
@@ -16,8 +17,21 @@
             <ComboBoxItem Content="Funkcja Wykładnicza"/>
             <ComboBoxItem Content="Funkcja Logarytmiczna"/>
         </ComboBox>
-        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="245,39,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <StackPanel x:Name="lineFunctioneEquation" Margin="10,37,0,0" Visibility="Hidden" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <TextBlock Name="nadroz" HorizontalAlignment="Left" Margin="10,353,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Piodaj rozdzielczość" VerticalAlignment="Top" Width="120"/>
+        <ComboBox Name="roz" HorizontalAlignment="Left" Margin="10,374,0,0" VerticalAlignment="Top" Width="120" >
+            <ComboBoxItem Content="1920x1080"/>
+            <ComboBoxItem Content="1366x768"/>
+            <ComboBoxItem Content="1536x864"/>
+            <ComboBoxItem Content="1440x900"/>
+            <ComboBoxItem Content="1280x720"/>
+            <ComboBoxItem Content="1600x900"/>
+        </ComboBox>
+
+        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap"  FontSize="22" Foreground="blue" Text="" VerticalAlignment="Top" Width="157" Height="36"/>
+        <TextBlock Name="abcd" HorizontalAlignment="Left" Margin="10,303,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Podaj skale siatki" VerticalAlignment="Top" Width="103"/>
+        
+        <!--Wzor funkcji liniowej-->
+        <StackPanel x:Name="lineFunctioneEquation" Margin="10,37,0,0"  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden">
             <Label Content="f(x) =" Width="39" Height="29"/>
             <Viewbox MaxWidth="100" StretchDirection="DownOnly">
                 <TextBox x:Name="linearFunctionA" TextWrapping="Wrap" Text="a" TextAlignment="Center"/>
@@ -26,10 +40,30 @@
             <Viewbox MaxWidth="100" StretchDirection="DownOnly">
                 <TextBox x:Name="linearFunctionB" TextWrapping="Wrap" Text="b" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             </Viewbox>
-
         </StackPanel>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="101,282,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-        <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="141,263,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+
+        <!--Wzor funckji kwadratowej-->
+        <StackPanel x:Name="squareFunctioneEquation" Margin="10,37,0,0" Visibility="Hidden" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Label Content="f(x) =" Width="39" Height="29"/>
+            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
+                <TextBox x:Name="squareFunctionA" TextWrapping="Wrap" Text="a" TextAlignment="Center"/>
+            </Viewbox>
+            <Label Content="x² +" Height="29"/>
+            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
+                <TextBox x:Name="squareFunctionB" TextWrapping="Wrap" Text="b" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </Viewbox>
+            <Label Content="x +" Height="29"/>
+            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
+                <TextBox x:Name="squareFunctionC" TextWrapping="Wrap" Text="c" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            </Viewbox>
+        </StackPanel>
+        <Button Content="Ustaw" HorizontalAlignment="Left" Margin="89,324,0,0" VerticalAlignment="Top" Click="Button_Click" Width="74"/>
+        <Button Content="Usuń siatke" HorizontalAlignment="Left" Margin="168,324,0,0" VerticalAlignment="Top"  Width="74"/>
+        <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="10,324,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="74"/>
+
+        <CheckBox x:Name="colorCheckBox" Content="Zmień motyw programu" HorizontalAlignment="Left" Margin="163,374,0,0" VerticalAlignment="Top"  RenderTransformOrigin="2.953,16.142"/>
+
+
 
     </Grid>
 </Window>

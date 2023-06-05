@@ -85,15 +85,24 @@ namespace GeneratorWykresow
                     poleWykresu.Children.Add(paths.Last());
                 }
             }
+
+            DrawXYAxis();
+
+            lines.Clear();
+            paths.Clear();
+        }
+
+        private void DrawXYAxis()
+        {
             LineGeometry midleX = new LineGeometry();
             LineGeometry midleY = new LineGeometry();
 
-            midleX.StartPoint = new Point(functionScaleHeight / 2, 0);
-            midleY.StartPoint = new Point(0, functionScaleWidth / 2);
-            midleX.EndPoint = new Point(functionScaleHeight / 2, functionScaleWidth);
-            midleY.EndPoint = new Point(functionScaleHeight, functionScaleWidth /2);
+            midleX.StartPoint = new Point(functionScaleWidth / 2, 0);
+            midleY.StartPoint = new Point(0, functionScaleHeight / 2);
+            midleX.EndPoint = new Point(functionScaleWidth / 2, functionScaleHeight);
+            midleY.EndPoint = new Point(functionScaleWidth, functionScaleHeight / 2);
 
-            Path midleXPath = new Path();  
+            Path midleXPath = new Path();
             Path midleYPath = new Path();
 
             midleXPath.Stroke = Brushes.Red;
@@ -106,28 +115,54 @@ namespace GeneratorWykresow
 
             poleWykresu.Children.Add(midleYPath);
             poleWykresu.Children.Add(midleXPath);
-
-            lines.Clear();
-            paths.Clear();
         }
 
-        public void OnGenerateClick()
+
+        private delegate double WzorMatematyczny(double x);
+        private void ConvertGridValueToCanvaboxValue(WzorMatematyczny wzor)
         {
+            //Objaśnienie tego czegoś jak działa: Kod działa na zasadzie obliczenia y, w skali gotowego wykresu funkcji, czytaj 
+            // x przekształczamy z współrzędnych i wymiarów canva boxa do wartości jakiej wynosi dany x na osi X (np 0 w skali wielkości canva boxa to -21 na osi X)
+            // potem obliczamy y przy użyciu wzoru na funkcję liniową
+            // Teraz przekształcamy otrzymaną wartość spowrotem na współrzędne canva boxa (czyli np z -21 na 0)
+            // Powtarzamy ten proces w kółko i w punkty od których ma rysować funkcję dajemy zmienne i (jako x) i y (jako y) (użyłem i zamiast x, ponieważ wartość x osi jest
+            //inna niż współrzędne wartości canva boxa)
 
-        }
-        private void DrawMatematicFunction(Point startPoint, int x, int y)
-        {
+            double y;
+            double i = 0;
+            double x = functionScaleWidth / 2 / (10 * zoom) * -1;
+            List<LineGeometry> lines = new List<LineGeometry>();
+            List<Path> paths = new List<Path>();
 
-        }
-        public void GetYWalue() 
-        {
-            
+            while(x <= functionScaleWidth / 2 / (10 * zoom))
+            {
+                lines.Add(new LineGeometry());
 
-        }
+                y = wzor(x);
+                y = y * (10 * zoom);
+                if (y > functionScaleHeight || y < -functionScaleHeight) { i += 10 * zoom; x++; continue; }
+                if (y < 0) { y *= -1; y += functionScaleHeight / 2; }
+                else if (y > 0) { y = functionScaleHeight / 2 - y; }
+                else { y = functionScaleHeight / 2; }
+                lines.Last().StartPoint = new Point(i, y);
 
-        private void DrawQuadraticFunction(object sender, EventArgs e)
-        {
+                i += 10 * zoom;
+                x++;
+                y = wzor(x);
+                y = y * (10 * zoom);
+                if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
+                if (y < 0) { y *= -1; y += functionScaleHeight / 2; }
+                else if (y > 0) { y = functionScaleHeight / 2 - y; }
+                else { y = functionScaleHeight / 2; }
+                lines.Last().EndPoint = new Point(i, y);
 
+                paths.Add(new Path());
+                paths.Last().Stroke = Brushes.Blue;
+                paths.Last().StrokeThickness = 0.5;
+                paths.Last().Data = lines.Last();
+
+                poleWykresu.Children.Add(paths.Last());
+            }
         }
 
         private void DrawLineFunction(object sender, EventArgs e)
@@ -137,7 +172,6 @@ namespace GeneratorWykresow
             String bString = linearFunctionB.Text;
             int a = 1;
             int b = 0;
-            double y, i;
            
             if (!reg.IsMatch(aString) || !reg.IsMatch(bString))
             {
@@ -155,53 +189,60 @@ namespace GeneratorWykresow
                 b = int.Parse(bString);
             }
 
+            ConvertGridValueToCanvaboxValue(x => a * x + b);
 
-            i = 0;
-            List<LineGeometry> lines = new List<LineGeometry>();
-            List<Path> paths = new List<Path>();
+        }
 
-            for (double x = functionScaleWidth / 2 / (10 * zoom) * -1; x <= functionScaleWidth / 2 / (10 * zoom);)
+        private void DrawSquartFunction(object sender, EventArgs e)
+        {
+            Regex reg = new Regex("^[0-9]+");
+            String aString = squareFunctionA.Text;
+            String bString = squareFunctionB.Text;
+            String cString = squareFunctionB.Text;
+            int a = 1;
+            int b = 0;
+            int c = 0;
+
+            if (!reg.IsMatch(aString) || !reg.IsMatch(bString) || !reg.IsMatch(cString))
             {
-                lines.Add(new LineGeometry());
-
-                y = a * x + b;
-                y = y * (10 * zoom);
-                if(y > functionScaleHeight || y < -functionScaleHeight) { i += 10 * zoom; x++; continue; }
-                if(y < 0) { y *= -1; y += 210; }
-                else if(y > 0) { y = 210 - y; }
-                else { y = 210; }
-                lines.Last().StartPoint = new Point(i, y);
-
-                i += 10 * zoom;
-                x++;
-                y = a * x + b;
-                y = y * (10 * zoom);
-                if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
-                if (y < 0) { y *= -1; y += 210; }
-                else if (y > 0) { y = 210 - y; }
-                else { y = 210; }
-                lines.Last().EndPoint = new Point(i, y);
-
-                paths.Add(new Path());
-                paths.Last().Stroke = Brushes.Blue;
-                paths.Last().StrokeThickness = 0.5;
-                paths.Last().Data = lines.Last();
-
-                poleWykresu.Children.Add(paths.Last());
+                abc.Text = "Muszą być lidzby dzbanie";
+                return;
             }
+
+            if (!String.IsNullOrEmpty(aString))
+            {
+                a = int.Parse(aString);
+            }
+
+            if (!String.IsNullOrEmpty(bString))
+            {
+                b = int.Parse(bString);
+            }
+
+            if (!String.IsNullOrEmpty(cString))
+            {
+                c = int.Parse(cString);
+            }
+
+            ConvertGridValueToCanvaboxValue(x => a * x * x + b * x + c);
+
         }
 
         private void OnSelectFunction(object sender, EventArgs e)
         {
             String optionSelected = (sender as ComboBox)?.Text ?? "error";
             abc.Text = optionSelected;
+            lineFunctioneEquation.Visibility = Visibility.Hidden;
+            squareFunctioneEquation.Visibility = Visibility.Hidden;
             switch (optionSelected)
             {
                 case "Funkcja Liniowa":
-                    lineFunctioneEquation.Visibility = Visibility;
+                    lineFunctioneEquation.Visibility = Visibility.Visible;
                     generateButton.Click += new RoutedEventHandler(DrawLineFunction);
                     break;
                 case "Funkcja Kwadratowa":
+                    squareFunctioneEquation.Visibility = Visibility.Visible;
+                    generateButton.Click += new RoutedEventHandler(DrawSquartFunction);
                     break;
             }
         }
