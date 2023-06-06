@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneratorWykresow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Width="960" Height="540">
 
     <Grid x:Name="bcs">
-        <Button x:Name="generateButton" Content="Generuj" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" Width="54"/>
-        <Canvas Name="poleWykresu" Background="Yellow" Margin="310,4,10,10" Height="420" Width="480"/>
-        <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" DropDownClosed="OnSelectFunction">
+        <Button x:Name="generateButton" Content="Generuj" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top" Width="54"/>
+        <Canvas Name="poleWykresu" Background="Yellow" Margin="448,10,32,34" Height="480" Width="480"/>
+        <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="264" DropDownClosed="OnSelectFunction">
             <ComboBoxItem Content="Funkcja Liniowa"/>
             <ComboBoxItem Content="Funkcja Kwadratowa"/>
             <ComboBoxItem Content="Funkcja Homograficzna"/>
@@ -25,43 +25,102 @@
             <ComboBoxItem Content="1440x900"/>
             <ComboBoxItem Content="1280x720"/>
             <ComboBoxItem Content="1600x900"/>
+            <ComboBoxItem Content="960x540"/>
         </ComboBox>
 
         <TextBlock Name="abc" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap"  FontSize="22" Foreground="blue" Text="" VerticalAlignment="Top" Width="157" Height="36"/>
         <TextBlock Name="abcd" HorizontalAlignment="Left" Margin="10,303,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Podaj skale siatki" VerticalAlignment="Top" Width="103"/>
-        
+
         <!--Wzor funkcji liniowej-->
-        <StackPanel x:Name="lineFunctioneEquation" Margin="10,37,0,0"  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Hidden">
-            <Label Content="f(x) =" Width="39" Height="29"/>
-            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
-                <TextBox x:Name="linearFunctionA" TextWrapping="Wrap" Text="a" TextAlignment="Center"/>
-            </Viewbox>
-            <Label Content="x +" Height="29"/>
-            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
-                <TextBox x:Name="linearFunctionB" TextWrapping="Wrap" Text="b" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            </Viewbox>
+        <StackPanel x:Name="lineFunctionEquation" Margin="10,47,0,361" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
+            <Label Content="f(x) = ax + b" FontSize="20" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="linearFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="LinearAValueChange"/>
+                <Label x:Name="linearFunctionAValue" Content="10" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="B" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="linearFunctionB" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="LinearBValueChange"/>
+                <Label x:Name="linearFunctionBValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
         </StackPanel>
 
         <!--Wzor funckji kwadratowej-->
-        <StackPanel x:Name="squareFunctioneEquation" Margin="10,37,0,0" Visibility="Hidden" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Label Content="f(x) =" Width="39" Height="29"/>
-            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
-                <TextBox x:Name="squareFunctionA" TextWrapping="Wrap" Text="a" TextAlignment="Center"/>
-            </Viewbox>
-            <Label Content="x² +" Height="29"/>
-            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
-                <TextBox x:Name="squareFunctionB" TextWrapping="Wrap" Text="b" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            </Viewbox>
-            <Label Content="x +" Height="29"/>
-            <Viewbox MaxWidth="100" StretchDirection="DownOnly">
-                <TextBox x:Name="squareFunctionC" TextWrapping="Wrap" Text="c" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            </Viewbox>
+        <StackPanel x:Name="squareFunctionEquation" Margin="10,47,0,333" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
+            <Label Content="f(x) = ax² + bx + c" FontSize="20" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="squareFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SquareAValueChange"/>
+                <Label x:Name="squareFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="B" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="squareFunctionB" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SquareBValueChange"/>
+                <Label x:Name="squareFunctionBValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="C" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="squareFunctionC" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="SquareCValueChange"/>
+                <Label x:Name="squareFunctionCValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
         </StackPanel>
+
+        <!--Wzor funckji homograficznej-->
+        <StackPanel x:Name="homographicFunctionEquation" Margin="10,47,0,318" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
+            <Label Content="f(x) = (ax + b) / (cx+d)" FontSize="20" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="homographicFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="HomographicAValueChange"/>
+                <Label x:Name="homographicFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="B" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="homographicFunctionB" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="HomographicBValueChange"/>
+                <Label x:Name="homographicFunctionBValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="C" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="homographicFunctionC" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="HomographicCValueChange"/>
+                <Label x:Name="homographicFunctionCValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="D" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="homographicFunctionD" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="HomographicDValueChange"/>
+                <Label x:Name="homographicFunctionDValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!--Wzor funkcji wykladniczej-->
+        <StackPanel x:Name="exponentialFunctionEquation" Margin="10,47,0,361" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
+            <Label Content="f(x) = aˣ" FontSize="20" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="exponentialFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="0" TickFrequency="0.1" IsSnapToTickEnabled="True" ValueChanged="ExponentialAValueChange"/>
+                <Label x:Name="exponentialFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!--Wzor funkcji logarytmicznej-->
+        <StackPanel x:Name="logarithmicFunctionEquation" Margin="10,47,0,361" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
+            <Label Content="f(x) = logₐx" FontSize="20" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
+                <Slider x:Name="logarithmicFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="0" TickFrequency="0.1" IsSnapToTickEnabled="True" ValueChanged="LogarithmicAValueChange"/>
+                <Label x:Name="logarithmicFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+
         <Button Content="Ustaw" HorizontalAlignment="Left" Margin="89,324,0,0" VerticalAlignment="Top" Click="Button_Click" Width="74"/>
         <Button Content="Usuń siatke" HorizontalAlignment="Left" Margin="168,324,0,0" VerticalAlignment="Top"  Width="74"/>
         <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="10,324,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="74"/>
 
         <CheckBox x:Name="colorCheckBox" Content="Zmień motyw programu" HorizontalAlignment="Left" Margin="163,374,0,0" VerticalAlignment="Top"  RenderTransformOrigin="2.953,16.142"/>
+
+        <TextBlock Name="naadroz" HorizontalAlignment="Left" Margin="10,420,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Podaj dokladnosc:" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Margin="10,436,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+
 
 
 

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -22,7 +23,7 @@ namespace GeneratorWykresow
     /// 
     public partial class MainWindow : Window
     {
-        private int scale = 1;
+        private double frequency = 1;
         private int zoom = 1;
         private double functionScaleHeight;
         private double functionScaleWidth;
@@ -34,17 +35,6 @@ namespace GeneratorWykresow
             functionScaleWidth = poleWykresu.Width;
 
             DrawGrid();
-
-/*            LineGeometry myLineGeometry2 = new LineGeometry();
-            myLineGeometry2.EndPoint = new Point(600, 300);
-            myLineGeometry2.StartPoint = new Point(100, 130);
-
-            Path myPath2 = new Path();
-            myPath2.Stroke = Brushes.Black;
-            myPath2.StrokeThickness = 1;
-            myPath2.Data = myLineGeometry2;
-
-            poleWykresu.Children.Add(myPath2);*/
 
         }
 
@@ -140,14 +130,14 @@ namespace GeneratorWykresow
 
                 y = wzor(x);
                 y = y * (10 * zoom);
-                if (y > functionScaleHeight || y < -functionScaleHeight) { i += 10 * zoom; x++; continue; }
+                if (y > functionScaleHeight || y < -functionScaleHeight) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; }
                 if (y < 0) { y *= -1; y += functionScaleHeight / 2; }
                 else if (y > 0) { y = functionScaleHeight / 2 - y; }
                 else { y = functionScaleHeight / 2; }
                 lines.Last().StartPoint = new Point(i, y);
 
-                i += 10 * zoom;
-                x++;
+                i += 10d * (double)zoom / frequency;
+                x += 1d / frequency;
                 y = wzor(x);
                 y = y * (10 * zoom);
                 if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
@@ -167,27 +157,9 @@ namespace GeneratorWykresow
 
         private void DrawLineFunction(object sender, EventArgs e)
         {
-            Regex reg = new Regex("^[0-9]+");
-            String aString = linearFunctionA.Text;
-            String bString = linearFunctionB.Text;
-            int a = 1;
-            int b = 0;
-           
-            if (!reg.IsMatch(aString) || !reg.IsMatch(bString))
-            {
-                abc.Text = "Muszą być lidzby dzbanie";
-                return;
-            }
+            int a = (int)linearFunctionA.Value;
+            int b = (int)linearFunctionB.Value;
 
-            if(!String.IsNullOrEmpty(aString))
-            {
-                a = int.Parse(aString);             
-            }
-
-            if(!String.IsNullOrEmpty(bString))
-            {
-                b = int.Parse(bString);
-            }
 
             ConvertGridValueToCanvaboxValue(x => a * x + b);
 
@@ -195,54 +167,74 @@ namespace GeneratorWykresow
 
         private void DrawSquartFunction(object sender, EventArgs e)
         {
-            Regex reg = new Regex("^[0-9]+");
-            String aString = squareFunctionA.Text;
-            String bString = squareFunctionB.Text;
-            String cString = squareFunctionB.Text;
-            int a = 1;
-            int b = 0;
-            int c = 0;
+            int a = (int)squareFunctionA.Value;
+            int b = (int)squareFunctionB.Value;
+            int c = (int)squareFunctionC.Value;
 
-            if (!reg.IsMatch(aString) || !reg.IsMatch(bString) || !reg.IsMatch(cString))
-            {
-                abc.Text = "Muszą być lidzby dzbanie";
-                return;
-            }
+            ConvertGridValueToCanvaboxValue(x => a * (x * x) + b * x + c);
 
-            if (!String.IsNullOrEmpty(aString))
-            {
-                a = int.Parse(aString);
-            }
+        }
 
-            if (!String.IsNullOrEmpty(bString))
-            {
-                b = int.Parse(bString);
-            }
+        private void DrawHomographicFunction(object sender, EventArgs e)
+        {
+            int a = (int)homographicFunctionA.Value;
+            int b = (int)homographicFunctionB.Value;
+            int c = (int)homographicFunctionC.Value;
+            int d = (int)homographicFunctionD.Value;
 
-            if (!String.IsNullOrEmpty(cString))
-            {
-                c = int.Parse(cString);
-            }
+            ConvertGridValueToCanvaboxValue(x => (a * x + b) / (c * x + d));
+        }
 
-            ConvertGridValueToCanvaboxValue(x => a * x * x + b * x + c);
+        private void DrawExponentialFunction(object sender, EventArgs e)
+        {
+            double a = exponentialFunctionA.Value;
 
+            ConvertGridValueToCanvaboxValue(x => Math.Pow(a, x));
+        }
+
+        private void DrawLogaritmicFunction(object sender, EventArgs e)
+        {
+            double a = logarithmicFunctionA.Value;
+            ConvertGridValueToCanvaboxValue(x => Math.Log(x, a));
         }
 
         private void OnSelectFunction(object sender, EventArgs e)
         {
             String optionSelected = (sender as ComboBox)?.Text ?? "error";
             abc.Text = optionSelected;
-            lineFunctioneEquation.Visibility = Visibility.Hidden;
-            squareFunctioneEquation.Visibility = Visibility.Hidden;
+            lineFunctionEquation.Visibility = Visibility.Hidden;
+            squareFunctionEquation.Visibility = Visibility.Hidden;
+            homographicFunctionEquation.Visibility = Visibility.Hidden;
+            exponentialFunctionEquation.Visibility = Visibility.Hidden;
+            logarithmicFunctionEquation.Visibility = Visibility.Hidden;
+
+            generateButton.Click -= new RoutedEventHandler(DrawLineFunction);
+            generateButton.Click -= new RoutedEventHandler(DrawSquartFunction);
+            generateButton.Click -= new RoutedEventHandler(DrawHomographicFunction);
+            generateButton.Click -= new RoutedEventHandler(DrawExponentialFunction);
+            generateButton.Click -= new RoutedEventHandler(DrawLogaritmicFunction);
+
             switch (optionSelected)
             {
                 case "Funkcja Liniowa":
-                    lineFunctioneEquation.Visibility = Visibility.Visible;
+                    lineFunctionEquation.Visibility = Visibility.Visible;
                     generateButton.Click += new RoutedEventHandler(DrawLineFunction);
                     break;
                 case "Funkcja Kwadratowa":
-                    squareFunctioneEquation.Visibility = Visibility.Visible;
+                    squareFunctionEquation.Visibility = Visibility.Visible;
                     generateButton.Click += new RoutedEventHandler(DrawSquartFunction);
+                    break;
+                case "Funkcja Homograficzna":
+                    homographicFunctionEquation.Visibility = Visibility.Visible;
+                    generateButton.Click += new RoutedEventHandler(DrawHomographicFunction);
+                    break;
+                case "Funkcja Wykładnicza":
+                    exponentialFunctionEquation.Visibility = Visibility.Visible;
+                    generateButton.Click += new RoutedEventHandler(DrawExponentialFunction);
+                    break;
+                case "Funkcja Logarytmiczna":
+                    logarithmicFunctionEquation.Visibility = Visibility.Visible;
+                    generateButton.Click += new RoutedEventHandler(DrawLogaritmicFunction);
                     break;
             }
         }
@@ -255,6 +247,67 @@ namespace GeneratorWykresow
             {
                 zoom = int.Parse(a);
                 DrawGrid();
+            }
+        }
+
+        private void LinearAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            linearFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void LinearBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            linearFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+        private void SquareAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            squareFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void SquareBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            squareFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void SquareCValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            squareFunctionCValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void HomographicAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            homographicFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+        private void HomographicBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            homographicFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+        private void HomographicCValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            homographicFunctionCValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+        private void HomographicDValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            homographicFunctionDValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void ExponentialAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            exponentialFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void LogarithmicAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            logarithmicFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            String a = (sender as TextBox)!.Text;
+            Regex reg = new Regex("^[0-9]+");
+            if (reg.IsMatch(a))
+            {
+                frequency = int.Parse(a);
             }
         }
     }
