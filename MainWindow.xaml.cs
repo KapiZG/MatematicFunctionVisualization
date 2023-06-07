@@ -31,15 +31,15 @@ namespace GeneratorWykresow
         {
             InitializeComponent();
 
-            functionScaleHeight = poleWykresu.Height;
-            functionScaleWidth = poleWykresu.Width;
-
             DrawGrid();
 
         }
 
         private void DrawGrid()
         {
+            functionScaleHeight = poleWykresu.Height;
+            functionScaleWidth = poleWykresu.Width;
+
             poleWykresu.Children.Clear();
 
             List<LineGeometry> lines = new List<LineGeometry>();
@@ -47,7 +47,7 @@ namespace GeneratorWykresow
 
             for (int ifPlus = 1; ifPlus > -2; ifPlus -= 2)
             {
-                for (int i = (int)(functionScaleHeight / 2); i < functionScaleHeight && i > 0; i += 10 * zoom * ifPlus)
+                for (int i = (int)(functionScaleWidth / 2); i < functionScaleWidth && i > 0; i += 10 * zoom * ifPlus)
                 {
                     lines.Add(new LineGeometry());
                     lines.Last().StartPoint = new Point(i, 0);
@@ -61,7 +61,7 @@ namespace GeneratorWykresow
                     poleWykresu.Children.Add(paths.Last());
                 }
 
-                for (int i = (int)(functionScaleWidth / 2); i < functionScaleWidth && i > 0; i += 10 * zoom * ifPlus)
+                for (int i = (int)(functionScaleHeight / 2); i < functionScaleHeight && i > 0; i += 10 * zoom * ifPlus)
                 {
                     lines.Add(new LineGeometry());
                     lines.Last().StartPoint = new Point(0, i);
@@ -127,7 +127,7 @@ namespace GeneratorWykresow
             while(x <= functionScaleWidth / 2 / (10 * zoom))
             {
                 lines.Add(new LineGeometry());
-
+                if (wzor(x) == -0.0) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; };
                 y = wzor(x);
                 y = y * (10 * zoom);
                 if (y > functionScaleHeight || y < -functionScaleHeight) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; }
@@ -138,6 +138,7 @@ namespace GeneratorWykresow
 
                 i += 10d * (double)zoom / frequency;
                 x += 1d / frequency;
+                if(wzor(x) == -0.0) { continue; };
                 y = wzor(x);
                 y = y * (10 * zoom);
                 if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
@@ -195,7 +196,11 @@ namespace GeneratorWykresow
         private void DrawLogaritmicFunction(object sender, EventArgs e)
         {
             double a = logarithmicFunctionA.Value;
-            ConvertGridValueToCanvaboxValue(x => Math.Log(x, a));
+            ConvertGridValueToCanvaboxValue(x =>
+            {
+                if (Double.IsNaN(Math.Log(x, a))) { return -0.0; }
+                return Math.Log(x, a) ;
+            });
         }
 
         private void OnSelectFunction(object sender, EventArgs e)
@@ -309,6 +314,22 @@ namespace GeneratorWykresow
             {
                 frequency = int.Parse(a);
             }
+        }
+
+        private void ChangeResolution(object sender, EventArgs e)
+        {
+            string resolution = (sender as ComboBox)?.Text ?? "Error";
+
+            MatchCollection match = Regex.Matches(resolution, "[0-9]+");
+            double width = double.Parse(match[0].Value);
+            double height = double.Parse(match[1].Value);
+
+            Width = width;
+            Height = height;
+
+            poleWykresu.Width = width / 2;
+            poleWykresu.Height = height / 1.125;
+            DrawGrid();
         }
     }
 }

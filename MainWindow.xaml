@@ -9,7 +9,7 @@
 
     <Grid x:Name="bcs">
         <Button x:Name="generateButton" Content="Generuj" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top" Width="54"/>
-        <Canvas Name="poleWykresu" Background="Yellow" Margin="448,10,32,34" Height="480" Width="480"/>
+        <Canvas Name="poleWykresu" Background="Yellow" Margin="448,10,32,34" Height="480" Width="480" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
         <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="264" DropDownClosed="OnSelectFunction">
             <ComboBoxItem Content="Funkcja Liniowa"/>
             <ComboBoxItem Content="Funkcja Kwadratowa"/>
@@ -17,8 +17,9 @@
             <ComboBoxItem Content="Funkcja Wykładnicza"/>
             <ComboBoxItem Content="Funkcja Logarytmiczna"/>
         </ComboBox>
-        <TextBlock Name="nadroz" HorizontalAlignment="Left" Margin="10,353,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Piodaj rozdzielczość" VerticalAlignment="Top" Width="120"/>
-        <ComboBox Name="roz" HorizontalAlignment="Left" Margin="10,374,0,0" VerticalAlignment="Top" Width="120" >
+        <TextBlock Name="nadroz" HorizontalAlignment="Left" Margin="10,0,0,153" TextWrapping="Wrap"   Foreground="Black" Text="Piodaj rozdzielczość" VerticalAlignment="Bottom" Width="120"/>
+        <ComboBox Name="roz" HorizontalAlignment="Left" Margin="10,0,0,131" VerticalAlignment="Bottom" Width="120" DropDownClosed="ChangeResolution">
+            <ComboBoxItem Content="2560x1440"/>
             <ComboBoxItem Content="1920x1080"/>
             <ComboBoxItem Content="1366x768"/>
             <ComboBoxItem Content="1536x864"/>
@@ -28,8 +29,8 @@
             <ComboBoxItem Content="960x540"/>
         </ComboBox>
 
-        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap"  FontSize="22" Foreground="blue" Text="" VerticalAlignment="Top" Width="157" Height="36"/>
-        <TextBlock Name="abcd" HorizontalAlignment="Left" Margin="10,303,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Podaj skale siatki" VerticalAlignment="Top" Width="103"/>
+        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap"  FontSize="22" Foreground="blue" Text="" VerticalAlignment="Bottom" Width="157" Height="36"/>
+        <TextBlock Name="abcd" HorizontalAlignment="Left" Margin="10,0,0,205" TextWrapping="Wrap"   Foreground="Black" Text="Podaj skale siatki" VerticalAlignment="Bottom" Width="103"/>
 
         <!--Wzor funkcji liniowej-->
         <StackPanel x:Name="lineFunctionEquation" Margin="10,47,0,361" Visibility="Hidden" Orientation="Vertical" Width="264" HorizontalAlignment="Left">
@@ -112,14 +113,14 @@
         </StackPanel>
 
 
-        <Button Content="Ustaw" HorizontalAlignment="Left" Margin="89,324,0,0" VerticalAlignment="Top" Click="Button_Click" Width="74"/>
-        <Button Content="Usuń siatke" HorizontalAlignment="Left" Margin="168,324,0,0" VerticalAlignment="Top"  Width="74"/>
-        <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="10,324,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="74"/>
+        <Button Content="Ustaw" HorizontalAlignment="Left" Margin="89,0,0,181" VerticalAlignment="Bottom" Click="Button_Click" Width="74"/>
+        <Button Content="Usuń siatke" HorizontalAlignment="Left" Margin="168,0,0,181" VerticalAlignment="Bottom"  Width="74"/>
+        <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="10,0,0,182" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom" Width="74"/>
 
-        <CheckBox x:Name="colorCheckBox" Content="Zmień motyw programu" HorizontalAlignment="Left" Margin="163,374,0,0" VerticalAlignment="Top"  RenderTransformOrigin="2.953,16.142"/>
+        <CheckBox x:Name="colorCheckBox" Content="Zmień motyw programu" HorizontalAlignment="Left" Margin="150,0,0,134" VerticalAlignment="Bottom"  RenderTransformOrigin="2.953,16.142"/>
 
-        <TextBlock Name="naadroz" HorizontalAlignment="Left" Margin="10,420,0,0" TextWrapping="Wrap"   Foreground="Black" Text="Podaj dokladnosc:" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,436,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
+        <TextBlock Name="naadroz" HorizontalAlignment="Left" Margin="10,0,0,104" TextWrapping="Wrap"   Foreground="Black" Text="Podaj dokladnosc:" VerticalAlignment="Bottom" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Margin="10,0,0,82" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120" TextChanged="TextBox_TextChanged"/>
 
 
 
