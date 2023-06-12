@@ -9,7 +9,9 @@
 
     <Grid x:Name="bcs">
         <Button x:Name="generateButton" Content="Generuj" HorizontalAlignment="Left" Margin="10,196,0,0" VerticalAlignment="Top" Width="54"/>
-        <Canvas Name="poleWykresu" Background="Yellow" Margin="448,10,32,34" Height="480" Width="480" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+        <Border x:Name="canvaBoxBorder" BorderBrush="Black" BorderThickness="10"  Height="500" Width="500" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Canvas Name="poleWykresu" Background="White" Height="480" Width="480"/>
+        </Border>
         <ComboBox Name="b" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="264" DropDownClosed="OnSelectFunction">
             <ComboBoxItem Content="Funkcja Liniowa"/>
             <ComboBoxItem Content="Funkcja Kwadratowa"/>
@@ -17,8 +19,8 @@
             <ComboBoxItem Content="Funkcja Wykładnicza"/>
             <ComboBoxItem Content="Funkcja Logarytmiczna"/>
         </ComboBox>
-        <TextBlock Name="nadroz" HorizontalAlignment="Left" Margin="10,0,0,153" TextWrapping="Wrap"   Foreground="Black" Text="Piodaj rozdzielczość" VerticalAlignment="Bottom" Width="120"/>
-        <ComboBox Name="roz" HorizontalAlignment="Left" Margin="10,0,0,131" VerticalAlignment="Bottom" Width="120" DropDownClosed="ChangeResolution">
+        <TextBlock HorizontalAlignment="Left" Margin="10,0,0,153" TextWrapping="Wrap" Foreground="Black" Text="Piodaj rozdzielczość" VerticalAlignment="Bottom" Width="120"/>
+        <ComboBox HorizontalAlignment="Left" Margin="10,0,0,131" VerticalAlignment="Bottom" Width="120" DropDownClosed="ChangeResolution">
             <ComboBoxItem Content="2560x1440"/>
             <ComboBoxItem Content="1920x1080"/>
             <ComboBoxItem Content="1366x768"/>
@@ -28,8 +30,13 @@
             <ComboBoxItem Content="1600x900"/>
             <ComboBoxItem Content="960x540"/>
         </ComboBox>
-
-        <TextBlock Name="abc" HorizontalAlignment="Left" Margin="370,10,0,0" TextWrapping="Wrap"  FontSize="22" Foreground="blue" Text="" VerticalAlignment="Bottom" Width="157" Height="36"/>
+        <TextBlock HorizontalAlignment="Left" Margin="145,0,0,153" TextWrapping="Wrap"   Foreground="Black" Text="Wybierz motyw" VerticalAlignment="Bottom" Width="120"/>
+        <ComboBox HorizontalAlignment="Left" Margin="145,0,0,131" VerticalAlignment="Bottom" Width="120" DropDownClosed="ChangeTheme">
+            <ComboBoxItem Content="jasny"/>
+            <ComboBoxItem Content="ciemny"/>
+            <ComboBoxItem Content="ślipek?"/>
+        </ComboBox>
+        
         <TextBlock Name="abcd" HorizontalAlignment="Left" Margin="10,0,0,205" TextWrapping="Wrap"   Foreground="Black" Text="Podaj skale siatki" VerticalAlignment="Bottom" Width="103"/>
 
         <!--Wzor funkcji liniowej-->
@@ -38,7 +45,7 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
                 <Slider x:Name="linearFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="-20" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="LinearAValueChange"/>
-                <Label x:Name="linearFunctionAValue" Content="10" FontSize="15" Padding="2" VerticalAlignment="Center"/>
+                <Label x:Name="linearFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label Content="B" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
@@ -97,7 +104,7 @@
             <Label Content="f(x) = aˣ" FontSize="20" HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal">
                 <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
-                <Slider x:Name="exponentialFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="0" TickFrequency="0.1" IsSnapToTickEnabled="True" ValueChanged="ExponentialAValueChange"/>
+                <Slider x:Name="exponentialFunctionA" Width="220" VerticalAlignment="Center" Maximum="5" Minimum="0" TickFrequency="0.05" IsSnapToTickEnabled="True" ValueChanged="ExponentialAValueChange"/>
                 <Label x:Name="exponentialFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
@@ -107,7 +114,7 @@
             <Label Content="f(x) = logₐx" FontSize="20" HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal">
                 <Label Content="A" Padding="2" FontSize="15" VerticalAlignment="Center" Width="14"/>
-                <Slider x:Name="logarithmicFunctionA" Width="220" VerticalAlignment="Center" Maximum="20" Minimum="0" TickFrequency="0.1" IsSnapToTickEnabled="True" ValueChanged="LogarithmicAValueChange"/>
+                <Slider x:Name="logarithmicFunctionA" Width="220" VerticalAlignment="Center" Maximum="5" Minimum="0" TickFrequency="0.05" IsSnapToTickEnabled="True" ValueChanged="LogarithmicAValueChange"/>
                 <Label x:Name="logarithmicFunctionAValue" Content="0" FontSize="15" Padding="2" VerticalAlignment="Center"/>
             </StackPanel>
         </StackPanel>
@@ -117,13 +124,10 @@
         <Button Content="Usuń siatke" HorizontalAlignment="Left" Margin="168,0,0,181" VerticalAlignment="Bottom"  Width="74"/>
         <TextBox x:Name="scaleTextBox" HorizontalAlignment="Left" Margin="10,0,0,182" TextWrapping="Wrap" Text="" VerticalAlignment="Bottom" Width="74"/>
 
-        <CheckBox x:Name="colorCheckBox" Content="Zmień motyw programu" HorizontalAlignment="Left" Margin="150,0,0,134" VerticalAlignment="Bottom"  RenderTransformOrigin="2.953,16.142"/>
-
         <TextBlock Name="naadroz" HorizontalAlignment="Left" Margin="10,0,0,104" TextWrapping="Wrap"   Foreground="Black" Text="Podaj dokladnosc:" VerticalAlignment="Bottom" Width="120"/>
         <TextBox HorizontalAlignment="Left" Margin="10,0,0,82" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="120" TextChanged="TextBox_TextChanged"/>
-
-
-
-
+        
+        <CheckBox Content="Generuj na żywo" HorizontalAlignment="Left" Margin="10,0,0,55" VerticalAlignment="Bottom" Click="SetLiveGeneration"/>
+        <CheckBox Content="Auto Czyszczenie" HorizontalAlignment="Left" Margin="142,0,0,55" VerticalAlignment="Bottom" Click="SetAutoCleaning"/>
     </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -27,9 +28,16 @@ namespace GeneratorWykresow
         private int zoom = 1;
         private double functionScaleHeight;
         private double functionScaleWidth;
+        private Brush gridColor;
+        private Color axesColor;
+        private bool isLiveGeneration;
+        private bool isAutoCleaning;
         public MainWindow()
         {
             InitializeComponent();
+
+            gridColor = Brushes.Black;
+            axesColor = Colors.Black;
 
             DrawGrid();
 
@@ -54,7 +62,7 @@ namespace GeneratorWykresow
                     lines.Last().EndPoint = new Point(i, functionScaleHeight);
 
                     paths.Add(new Path());
-                    paths.Last().Stroke = Brushes.Black;
+                    paths.Last().Stroke = gridColor;
                     paths.Last().StrokeThickness = 0.5;
                     paths.Last().Data = lines.Last();
 
@@ -68,7 +76,7 @@ namespace GeneratorWykresow
                     lines.Last().EndPoint = new Point(functionScaleWidth, i);
 
                     paths.Add(new Path());
-                    paths.Last().Stroke = Brushes.Black;
+                    paths.Last().Stroke = gridColor;
                     paths.Last().StrokeThickness = 0.5;
                     paths.Last().Data = lines.Last();
 
@@ -95,12 +103,12 @@ namespace GeneratorWykresow
             Path midleXPath = new Path();
             Path midleYPath = new Path();
 
-            midleXPath.Stroke = Brushes.Red;
-            midleXPath.StrokeThickness = 0.5;
+            midleXPath.Stroke = new SolidColorBrush(axesColor);
+            midleXPath.StrokeThickness = 1;
             midleXPath.Data = midleX;
 
-            midleYPath.Stroke = Brushes.Red;
-            midleYPath.StrokeThickness = 0.5;
+            midleYPath.Stroke = new SolidColorBrush(axesColor);
+            midleYPath.StrokeThickness = 1;
             midleYPath.Data = midleY;
 
             poleWykresu.Children.Add(midleYPath);
@@ -117,7 +125,10 @@ namespace GeneratorWykresow
             // Teraz przekształcamy otrzymaną wartość spowrotem na współrzędne canva boxa (czyli np z -21 na 0)
             // Powtarzamy ten proces w kółko i w punkty od których ma rysować funkcję dajemy zmienne i (jako x) i y (jako y) (użyłem i zamiast x, ponieważ wartość x osi jest
             //inna niż współrzędne wartości canva boxa)
-
+            if(isAutoCleaning) 
+            {
+                DrawGrid();
+            }
             double y;
             double i = 0;
             double x = functionScaleWidth / 2 / (10 * zoom) * -1;
@@ -127,7 +138,7 @@ namespace GeneratorWykresow
             while(x <= functionScaleWidth / 2 / (10 * zoom))
             {
                 lines.Add(new LineGeometry());
-                if (wzor(x) == -0.0) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; };
+                if (Double.IsNaN(wzor(x))) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; };
                 y = wzor(x);
                 y = y * (10 * zoom);
                 if (y > functionScaleHeight || y < -functionScaleHeight) { i += 10d * (double)zoom / frequency; x += 1d / frequency; continue; }
@@ -138,7 +149,7 @@ namespace GeneratorWykresow
 
                 i += 10d * (double)zoom / frequency;
                 x += 1d / frequency;
-                if(wzor(x) == -0.0) { continue; };
+                if(Double.IsNaN(wzor(x))) { continue; };
                 y = wzor(x);
                 y = y * (10 * zoom);
                 if (y > functionScaleHeight || y < -functionScaleHeight) { continue; }
@@ -148,8 +159,8 @@ namespace GeneratorWykresow
                 lines.Last().EndPoint = new Point(i, y);
 
                 paths.Add(new Path());
-                paths.Last().Stroke = Brushes.Blue;
-                paths.Last().StrokeThickness = 0.5;
+                paths.Last().Stroke = new SolidColorBrush(Colors.Blue);
+                paths.Last().StrokeThickness = 1;
                 paths.Last().Data = lines.Last();
 
                 poleWykresu.Children.Add(paths.Last());
@@ -198,7 +209,7 @@ namespace GeneratorWykresow
             double a = logarithmicFunctionA.Value;
             ConvertGridValueToCanvaboxValue(x =>
             {
-                if (Double.IsNaN(Math.Log(x, a))) { return -0.0; }
+                if (Double.IsNaN(Math.Log(x, a))) { return double.NaN; }
                 return Math.Log(x, a) ;
             });
         }
@@ -206,7 +217,6 @@ namespace GeneratorWykresow
         private void OnSelectFunction(object sender, EventArgs e)
         {
             String optionSelected = (sender as ComboBox)?.Text ?? "error";
-            abc.Text = optionSelected;
             lineFunctionEquation.Visibility = Visibility.Hidden;
             squareFunctionEquation.Visibility = Visibility.Hidden;
             homographicFunctionEquation.Visibility = Visibility.Hidden;
@@ -258,52 +268,68 @@ namespace GeneratorWykresow
         private void LinearAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             linearFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawLineFunction);
         }
 
         private void LinearBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             linearFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawLineFunction);
         }
         private void SquareAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             squareFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawSquartFunction);
         }
 
         private void SquareBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             squareFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawSquartFunction);
         }
 
         private void SquareCValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             squareFunctionCValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawSquartFunction);
         }
 
         private void HomographicAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             homographicFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawHomographicFunction);
         }
         private void HomographicBValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             homographicFunctionBValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawHomographicFunction);
         }
         private void HomographicCValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             homographicFunctionCValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawHomographicFunction);
         }
         private void HomographicDValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             homographicFunctionDValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawHomographicFunction);
         }
 
         private void ExponentialAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             exponentialFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawExponentialFunction);
         }
 
         private void LogarithmicAValueChange(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             logarithmicFunctionAValue.Content = (sender as Slider)?.Value ?? 0.0;
+            LiveGeneration(DrawLogaritmicFunction);
+        }
+
+        private delegate void Draw(object sender, EventArgs e);
+        private void LiveGeneration(Draw function) {
+            if (isLiveGeneration) function(null, null); 
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -329,7 +355,86 @@ namespace GeneratorWykresow
 
             poleWykresu.Width = width / 2;
             poleWykresu.Height = height / 1.125;
+            canvaBoxBorder.Width = width / 2 + 20;
+            canvaBoxBorder.Height = Height / 1.125 + 20;
             DrawGrid();
+        }
+
+        private void ChangeTheme(object sender, EventArgs e) 
+        {
+            string theme = (sender as ComboBox)?.Text ?? "Error";
+            Brush textBlockColor = Brushes.White;
+
+            switch (theme)
+            {
+                case "jasny":
+                    this.Background = Brushes.White;
+                    textBlockColor = Brushes.Black;
+                    gridColor = Brushes.Black;
+                    axesColor = Colors.Black;
+                    canvaBoxBorder.BorderBrush = Brushes.Black;
+                    poleWykresu.Background = Brushes.White;
+                    break;
+                case "ciemny":
+                    this.Background = Brushes.Black;
+                    textBlockColor = Brushes.White;
+                    gridColor = Brushes.White;
+                    axesColor = Colors.White;
+                    canvaBoxBorder.BorderBrush = Brushes.White;
+                    poleWykresu.Background = Brushes.Black;
+                    break;
+                case "ślipek?":
+                    /*ImageBrush a = new ImageBrush();
+                    a.ImageSource = new BitmapImage(new Uri(@"PanProfesorKacper.png", UriKind.Relative));
+                    this.Background = a;*/
+                    break;
+            }
+
+            DrawGrid();
+
+            foreach (TextBlock b in bcs.Children.OfType<TextBlock>())
+            {
+                b.Foreground = textBlockColor;
+            }
+
+            foreach (CheckBox b in bcs.Children.OfType<CheckBox>())
+            {
+                b.Foreground = textBlockColor;
+            }
+
+            foreach (StackPanel b in bcs.Children.OfType<StackPanel>())
+            {
+                b.Children.OfType<Label>().First().Foreground = textBlockColor;
+                foreach (StackPanel c in b.Children.OfType<StackPanel>())
+                {
+                    c.Children.OfType<Label>().First().Foreground = textBlockColor;
+                    c.Children.OfType<Label>().Last().Foreground = textBlockColor;
+                }
+            }
+        }
+
+        private void SetLiveGeneration(object sender, EventArgs e)
+        {
+            if ((sender as CheckBox)?.IsChecked ?? false)
+            {
+                isLiveGeneration = true;
+            } 
+            else
+            {
+                isLiveGeneration = false;
+            }
+        }
+
+        private void SetAutoCleaning(object sender, EventArgs e)
+        {
+            if((sender as CheckBox)?.IsChecked ?? false)
+            {
+                isAutoCleaning= true;
+            }
+            else
+            {
+                isAutoCleaning = false;
+            }
         }
     }
 }
